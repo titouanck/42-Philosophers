@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 02:18:08 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/30 02:49:37 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/01/30 12:37:30 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,24 @@ void	free_philos(t_philo *first)
 	}
 }
 
-t_philo	*create_philos(int nbr)
+static void	philos_initialisation(t_philo *first, t_rules *rules)
+{
+	t_philo	*current;
+	
+	current = first;
+	while (current)
+	{
+		current->rules = rules;
+		current->fork = 1;
+		current->eat = 0;
+		current->sleep = 0;
+		current = current->next;
+		if (current == first)
+			break ;
+	}
+}
+
+t_philo	*create_philos(int nbr, t_rules *rules)
 {
 	size_t	i;
 	t_philo	*first;
@@ -52,6 +69,7 @@ t_philo	*create_philos(int nbr)
 	}
 	current->next = first;
 	first->prev = current;
+	philos_initialisation(first, rules);
 	return (first);
 }
 

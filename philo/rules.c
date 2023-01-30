@@ -6,13 +6,21 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 01:59:18 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/30 02:29:05 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/01/30 12:26:23 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_rules philo_rules(char **args, int size)
+static t_rules	micro_to_mili(t_rules rules)
+{
+	rules.time_to_die *= 1000;
+	rules.time_to_eat *= 1000;
+	rules.time_to_sleep *= 1000;
+	return (rules);
+}
+
+t_rules	philo_rules(char **args, int size)
 {
 	t_rules	rules;
 
@@ -34,6 +42,9 @@ t_rules philo_rules(char **args, int size)
 	|| rules.must_eat != UNDEFINED && rules.must_eat < 1)
 		ft_putstr_fd(ERR_TOOSMALLVALUE, 2);
 	else
+	{
 		rules.err = 0;
+		rules = micro_to_mili(rules);
+	}
 	return (rules);
 }
