@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 22:45:10 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/30 13:28:12 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/01/31 17:20:03 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,24 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <sys/time.h>
+
+typedef struct s_round
+{
+	long	eat;
+	long	philos;
+}		t_round;
 
 typedef struct s_rules
 {
-	int		err;
+	int		end;
 	long	number_of_philosophers;
 	long	time_to_die;
 	long	time_to_eat;
 	long	time_to_sleep;
 	long	must_eat;
+	long	start_time;
+	t_round	*round;
 }		t_rules;
 
 typedef struct s_philo
@@ -33,10 +42,10 @@ typedef struct s_philo
 	t_rules			*rules;
 	int				nbr;
 	int				eat;
-	int				sleep;
 	int				fork;
 	struct s_philo	*prev;
 	struct s_philo	*next;
+	long			last_eat;
 }					t_philo;
 
 # define ERRNBR 4815162342
@@ -63,11 +72,12 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
 // utils.c
 void		ft_putstr_fd(char const *s, int fd);
 long		ft_atoi_check(const char *str);
+long		philo_gettimeofday(void);
 
 // operations.c
 int			just_eat(t_philo *philo);
-void		just_sleep(t_philo *philo);
-void		just_think(t_philo *philo);
+int			just_sleep(t_philo *philo);
+int			just_think(t_philo *philo);
 
 // rules.c
 t_rules		philo_rules(char **args, int size);
@@ -76,5 +86,8 @@ t_rules		philo_rules(char **args, int size);
 t_philo		*create_philos(int nbr, t_rules *rules);
 void		free_philos(t_philo *first);
 pthread_t	*thread_philos(int number_of_philosophers);
+
+// death.c
+int			im_dead(t_philo *philo);
 
 #endif

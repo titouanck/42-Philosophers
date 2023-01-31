@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 22:50:15 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/30 01:50:29 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/01/31 12:44:00 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,16 @@ long	ft_atoi_check(const char *str)
 		i++;
 	}
 	return (ft_atoi_check_bis(str, i, nbr, sign));
+}
+
+long	philo_gettimeofday(void)
+{
+	struct timeval	time;
+	long			nb;
+
+	if (gettimeofday(&time, NULL) != -1)
+		nb = time.tv_sec * 1000 + time.tv_usec / 1000;
+	else
+		nb = -1;
+	return (nb);
 }

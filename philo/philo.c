@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 14:26:58 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/30 13:09:43 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/01/31 15:23:16 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,21 @@
 
 void	*routine(void *arg)
 {
-	t_philo	*philo;
+	t_philo			*philo;
 
 	philo = arg;
-	while (1)
+	while (!im_dead(philo))
 	{
 		if (philo->rules->must_eat != UNDEFINED \
 		&& philo->eat >= philo->rules->must_eat)
 			break ;
-		just_eat(philo);
-		just_sleep(philo);
-		just_think(philo);
+		if (!just_eat(philo) || !just_sleep(philo) || !just_think(philo))
+		{
+			philo->rules->end = 1;
+			return (NULL);
+		}
 	}
+	philo->rules->end = 1;
 	return (NULL);
 }
 
@@ -37,7 +40,7 @@ int	philo(char **args, int size)
 	size_t		i;
 
 	rules = philo_rules(args, size);
-	if (rules.err)
+	if (rules.end)
 		return (1);
 	current = create_philos(rules.number_of_philosophers, &rules);
 	if (!current)

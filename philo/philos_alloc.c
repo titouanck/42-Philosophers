@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 02:18:08 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/30 12:37:30 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/01/31 17:02:07 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	philos_initialisation(t_philo *first, t_rules *rules)
 		current->rules = rules;
 		current->fork = 1;
 		current->eat = 0;
-		current->sleep = 0;
+		current->last_eat = rules->start_time;
 		current = current->next;
 		if (current == first)
 			break ;
