@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 14:26:58 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/31 15:23:16 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/02/01 17:33:28 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,15 @@ void	*routine(void *arg)
 	while (!im_dead(philo))
 	{
 		if (philo->rules->must_eat != UNDEFINED \
-		&& philo->eat >= philo->rules->must_eat)
+		&& philo->meals >= philo->rules->must_eat)
 			break ;
 		if (!just_eat(philo) || !just_sleep(philo) || !just_think(philo))
-		{
-			philo->rules->end = 1;
-			return (NULL);
-		}
+			break ;
 	}
-	philo->rules->end = 1;
 	return (NULL);
 }
 
-int	philo(char **args, int size)
+int	philo(char **args, int size)	
 {
 	t_rules		rules;
 	t_philo		*current;
@@ -44,15 +40,22 @@ int	philo(char **args, int size)
 		return (1);
 	current = create_philos(rules.number_of_philosophers, &rules);
 	if (!current)
-		return (2);
+		return (free_rules(rules), 2);
 	if (rules.number_of_philosophers == 1)
 	{
 		current->next = NULL;
 		current->prev = NULL;
 	}
+	
+	// print_waitline(rules);
+	// swap_waitline(rules);
+	// print_waitline(rules);
+	// back_to_the_end(rules);
+	// print_waitline(rules);
+	
 	threads = thread_philos(rules.number_of_philosophers);
 	if (!threads)
-		return(free_philos(current), 3);
+		return(free_rules(rules), free_philos(current), 3);
 	i = 0;
 	while (i < rules.number_of_philosophers)
 	{
@@ -66,7 +69,12 @@ int	philo(char **args, int size)
 		pthread_join(threads[i], NULL);
 		i++;
 	}
+	if (threads)
+		free(threads);
+	
 	free_philos(current);
+	free_rules(rules);
+	
 	return (0);
 }
 

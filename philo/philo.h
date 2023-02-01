@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 22:45:10 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/31 17:20:03 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/02/01 18:16:46 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,34 +19,36 @@
 # include <stdlib.h>
 # include <sys/time.h>
 
-typedef struct s_round
+typedef struct s_waitingline
 {
-	long	eat;
-	long	philos;
-}		t_round;
+	int						nbr;
+	struct s_waitingline	*prev;
+	struct s_waitingline	*next;
+}							t_waitingline;
 
 typedef struct s_rules
 {
-	int		end;
-	long	number_of_philosophers;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	long	must_eat;
-	long	start_time;
-	t_round	*round;
-}		t_rules;
+	int				end;
+	long			number_of_philosophers;
+	long			time_to_die;
+	long			time_to_eat;
+	long			time_to_sleep;
+	long			must_eat;
+	long			start_time;
+	t_waitingline	*waitl;
+}					t_rules;
 
 typedef struct s_philo
 {
-	t_rules			*rules;
-	int				nbr;
-	int				eat;
-	int				fork;
-	struct s_philo	*prev;
-	struct s_philo	*next;
-	long			last_eat;
-}					t_philo;
+	int					nbr;
+	int					meals;
+	int					fork;
+	long				last_eat;
+	t_rules				*rules;
+	pthread_mutex_t		mutex;
+	struct s_philo		*prev;
+	struct s_philo		*next;
+}						t_philo;
 
 # define ERRNBR 4815162342
 # define UNDEFINED -4815162342
@@ -70,6 +72,7 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n"
 # define ENDCL "\033[0m"
 
 // utils.c
+void		ft_swap(int *a, int *b);
 void		ft_putstr_fd(char const *s, int fd);
 long		ft_atoi_check(const char *str);
 long		philo_gettimeofday(void);
@@ -80,12 +83,18 @@ int			just_sleep(t_philo *philo);
 int			just_think(t_philo *philo);
 
 // rules.c
+void		free_rules(t_rules rules);
 t_rules		philo_rules(char **args, int size);
 
 // philos_alloc.c
 t_philo		*create_philos(int nbr, t_rules *rules);
 void		free_philos(t_philo *first);
 pthread_t	*thread_philos(int number_of_philosophers);
+
+// waitline.c
+void		print_waitline(t_rules rules);
+void		swap_waitline(t_rules rules);
+void		back_to_the_end(t_rules rules);
 
 // death.c
 int			im_dead(t_philo *philo);

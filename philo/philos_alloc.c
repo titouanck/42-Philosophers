@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 02:18:08 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/31 17:02:07 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/02/01 18:19:27 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	free_philos(t_philo *first)
 	current = first;
 	while (current)
 	{
+		pthread_mutex_destroy(&(current->mutex));
 		tmp = current;
 		current = current->next;
 		free(tmp);
@@ -35,9 +36,10 @@ static void	philos_initialisation(t_philo *first, t_rules *rules)
 	current = first;
 	while (current)
 	{
+		pthread_mutex_init(&(current->mutex), NULL);
 		current->rules = rules;
 		current->fork = 1;
-		current->eat = 0;
+		current->meals = 0;
 		current->last_eat = rules->start_time;
 		current = current->next;
 		if (current == first)

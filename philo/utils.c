@@ -6,11 +6,20 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 22:50:15 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/01/31 12:44:00 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/02/01 16:58:26 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	ft_swap(int *a, int *b)
+{
+	int	tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
 
 void	ft_putstr_fd(char const *s, int fd)
 {
