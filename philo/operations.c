@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 12:58:52 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/02/01 18:29:15 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/02/03 17:27:35 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 
 static int	take_forks(t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->mutex));
-	pthread_mutex_lock(&(philo->next->mutex));
-	if (!(philo->fork) || !(philo->next) || !(philo->next->fork))
-		return (pthread_mutex_unlock(&(philo->next->mutex)), \
-				pthread_mutex_unlock(&(philo->mutex)), 0);
-	philo->fork = 0;
-	philo->next->fork = 0;
-	pthread_mutex_unlock(&(philo->next->mutex));
-	pthread_mutex_unlock(&(philo->mutex));
+	if (philo->nbr % 2 == 0)
+	{
+		pthread_mutex_lock(&(philo->mutex));
+		pthread_mutex_lock(&(philo->next->mutex));
+	}
+	else
+	{
+		pthread_mutex_lock(&(philo->next->mutex));
+		pthread_mutex_lock(&(philo->mutex));
+	}
 	if (im_dead(philo))
 		return (0);
 	printf \
@@ -33,13 +34,16 @@ static int	take_forks(t_philo *philo)
 
 static void	return_forks(t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->mutex));
-	pthread_mutex_lock(&(philo->next->mutex));
-	philo->fork = 1;
-	if (philo->next)
-		philo->next->fork = 1;
-	pthread_mutex_unlock(&(philo->next->mutex));
-	pthread_mutex_unlock(&(philo->mutex));
+	if (philo->nbr % 2 != 0)
+	{
+		pthread_mutex_unlock(&(philo->mutex));
+		pthread_mutex_unlock(&(philo->next->mutex));
+	}
+	else
+	{
+		pthread_mutex_unlock(&(philo->next->mutex));
+		pthread_mutex_unlock(&(philo->mutex));
+	}
 }
 
 int	just_eat(t_philo *philo)
@@ -64,8 +68,6 @@ int	just_eat(t_philo *philo)
 				return_forks(philo);
 				break ;
 			}
-			else
-				swap_waitline(*(philo->rules));
 		}
 	}
 	return (1);
