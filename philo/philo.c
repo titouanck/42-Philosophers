@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 14:26:58 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/02/01 17:33:28 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:43:07 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,76 +14,65 @@
 
 void	*routine(void *arg)
 {
-	t_philo			*philo;
+	t_philo	*philo;
 
 	philo = arg;
-	while (!im_dead(philo))
-	{
-		if (philo->rules->must_eat != UNDEFINED \
-		&& philo->meals >= philo->rules->must_eat)
-			break ;
-		if (!just_eat(philo) || !just_sleep(philo) || !just_think(philo))
-			break ;
-	}
-	return (NULL);
+	printf("Bonjour, je suis le philo %d\n", philo->nbr);
 }
 
-int	philo(char **args, int size)	
+static int	ft_philo(t_properties *properties, \
+	t_philo *first, pthread_t *threads)
 {
-	t_rules		rules;
-	t_philo		*current;
-	pthread_t	*threads;
-	size_t		i;
+	size_t	i;
+	t_philo	*philo;
 
-	rules = philo_rules(args, size);
-	if (rules.end)
-		return (1);
-	current = create_philos(rules.number_of_philosophers, &rules);
-	if (!current)
-		return (free_rules(rules), 2);
-	if (rules.number_of_philosophers == 1)
-	{
-		current->next = NULL;
-		current->prev = NULL;
-	}
-	
-	// print_waitline(rules);
-	// swap_waitline(rules);
-	// print_waitline(rules);
-	// back_to_the_end(rules);
-	// print_waitline(rules);
-	
-	threads = thread_philos(rules.number_of_philosophers);
-	if (!threads)
-		return(free_rules(rules), free_philos(current), 3);
+	philo = first;
 	i = 0;
-	while (i < rules.number_of_philosophers)
+	while (i < properties->number_of_philosophers)
 	{
-		pthread_create(threads + i, NULL, routine, current);
-		current = current->next;
+		pthread_create(threads + i, NULL, routine, philo);
+		philo = philo->next;
 		i++;
 	}
+	philo = first;
 	i = 0;
-	while (i < rules.number_of_philosophers)
+	while (i < properties->number_of_philosophers)
 	{
 		pthread_join(threads[i], NULL);
 		i++;
 	}
-	if (threads)
-		free(threads);
-	
-	free_philos(current);
-	free_rules(rules);
-	
-	return (0);
+	return (free(properties), free_philos(first), free(threads), 0);
+}
+
+static int	initialisation(char **args, int size)
+{
+	t_properties	*properties;
+	t_philo			*philo;
+	pthread_t		*threads;
+
+	properties = define_properties(args, size);
+	if (!properties)
+		return (1);
+	philo = generate_philos(properties->number_of_philosophers);
+	if (!philo)
+		return (free(properties), 1);
+	if (properties->number_of_philosophers == 1)
+	{
+		philo->next = NULL;
+		philo->prev = NULL;
+	}
+	threads = thread_philos(properties->number_of_philosophers);
+	if (!threads)
+		return (free(properties), free_philos(philo), 1);
+	if (!time_initialisation(properties, philo))
+		return (free(properties), free_philos(philo), free(threads), 1);
+	return (ft_philo(properties, philo, threads));
 }
 
 int	main(int argc, char **argv)
 {
-	if (argc < 5)
-		return (ft_putstr_fd(ERR_NOTENOUGHARGS, 2), 1);
-	else if (argc > 6)
-		return (ft_putstr_fd(ERR_TOOMANYARGS, 2), 1);
+	if (argc < 5 || argc > 6)
+		return (ft_putstr_fd(ERRARGS, 2), 1);
 	else
-		return (philo(argv + 1, argc - 1));
+		return (initialisation(argv + 1, argc - 1));
 }
