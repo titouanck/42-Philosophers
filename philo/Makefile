@@ -1,2 +1,2 @@
 all: 
-	gcc -o philo *.c
+	@	gcc -o philo -lpthread -D_REENTRANT *.c

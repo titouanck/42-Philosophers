@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 13:39:08 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/02/21 15:41:02 by tchevrie         ###   ########.fr       */
+/*   Created: 2023/03/29 16:59:51 by tchevrie          #+#    #+#             */
+/*   Updated: 2023/03/29 18:44:39 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	free_philos(t_philo *first)
 	}
 }
 
-void	philos_initialiation(t_philo *first)
+void	philos_initialiation(t_properties *properties, t_philo *first)
 {
 	t_philo	*philo;
 	size_t	i;
@@ -40,7 +40,10 @@ void	philos_initialiation(t_philo *first)
 	{
 		pthread_mutex_init(&(philo->fork), NULL);
 		philo->nbr = i;
+		philo->properties = properties;
 		philo->meals = 0;
+		philo->last_eat = 0;
+		philo->fork_hodler = 0;
 		philo = philo->next;
 		if (philo == first)
 			break ;
@@ -48,7 +51,7 @@ void	philos_initialiation(t_philo *first)
 	}
 }
 
-t_philo	*generate_philos(int nb)
+t_philo	*generate_philos(t_properties *properties, int nb)
 {
 	t_philo	*philo;
 	t_philo	*first;
@@ -70,7 +73,7 @@ t_philo	*generate_philos(int nb)
 	}
 	philo->next = first;
 	first->prev = philo;
-	philos_initialiation(first);
+	philos_initialiation(properties, first);
 	return (first);
 }
 

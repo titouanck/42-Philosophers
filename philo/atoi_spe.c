@@ -1,39 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   atoi_spe.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/27 22:50:15 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/02/21 13:22:38 by tchevrie         ###   ########.fr       */
+/*   Created: 2023/03/29 16:31:56 by tchevrie          #+#    #+#             */
+/*   Updated: 2023/03/29 16:41:19 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_swap(int *a, int *b)
-{
-	int	tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
-
-void	ft_putstr_fd(char const *s, int fd)
-{
-	size_t	i;
-
-	if (!s || fd == -1)
-		return ;
-	i = 0;
-	while (s[i])
-		i++;
-	write(fd, s, i);
-}
-
-static long	ft_atoi_check_bis(const char *str, int i, long nbr, long sign)
+static long	_bis(const char *str, int i, long nbr, long sign)
 {
 	while ('0' <= str[i] && str[i] <= '9')
 	{
@@ -47,7 +26,7 @@ static long	ft_atoi_check_bis(const char *str, int i, long nbr, long sign)
 	return (nbr * sign);
 }
 
-long	ft_atoi_check(const char *str)
+long	atoi_spe(const char *str)
 {
 	long		nbr;
 	long		sign;
@@ -65,5 +44,5 @@ long	ft_atoi_check(const char *str)
 		sign *= -1;
 		i++;
 	}
-	return (ft_atoi_check_bis(str, i, nbr, sign));
+	return (_bis(str, i, nbr, sign));
 }
