@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:12:53 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/29 18:38:53 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/30 18:53:01 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ static int	_check_properties(t_properties *properties, int size)
 	|| properties->time_to_sleep < 0 \
 	|| (properties->must_eat < 0 && size == 5))
 		return (0);
-	pthread_mutex_init(&(properties->print_mutex), NULL);
 	return (1);
 }
 
@@ -48,5 +47,8 @@ t_properties	*define_properties(char **args, int size)
 		properties->must_eat = -1;
 	if (!_check_properties(properties, size))
 		return (free(properties), ft_putstr_fd(ERRARGS, 2), NULL);
+	properties->start = 0;
+	pthread_mutex_init(&(properties->print_mutex), NULL);
+	pthread_mutex_init(&(properties->checkdeath_mutex), NULL);
 	return (properties);
 }

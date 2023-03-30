@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:59:51 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/29 18:44:39 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/30 14:18:52 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	philos_initialiation(t_properties *properties, t_philo *first)
 		philo->properties = properties;
 		philo->meals = 0;
 		philo->last_eat = 0;
-		philo->fork_hodler = 0;
+		philo->left_fork_hodler = 0;
+		philo->right_fork_hodler = 0;
 		philo = philo->next;
 		if (philo == first)
 			break ;

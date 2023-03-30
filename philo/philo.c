@@ -6,87 +6,121 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:41 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/29 19:13:50 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/30 19:31:14 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check_death(t_properties *properties, t_philo *philo)
+int	check_death(t_properties *properties, t_philo *philo)
 {
 	long	time_ms;
 
 	time_ms = get_time();
+	pthread_mutex_lock(&(properties->checkdeath_mutex));
 	if (properties->death)
 	{
+		pthread_mutex_unlock(&(properties->checkdeath_mutex));
+		// dprintf(2, "[%d] renonce a la vie apres avoir appris la mort d'un collegue.\n", philo->nbr);
 		restitute_forks(properties, philo);
-		exit(0);
+		return (0);
 	}
-	else if (time_ms - philo->last_eat >= properties->time_to_die)
-	{
-		print_state(properties, philo, DIED);
-		exit(0);
-	}
+	else
+		pthread_mutex_unlock(&(properties->checkdeath_mutex));
+	return (1);
 }
 
-void	sleep_ms(t_properties *properties, t_philo *philo, long x_ms)
+int	sleep_ms(t_properties *properties, t_philo *philo, long sleep_ms)
 {
-	x_ms *= 1000;
+	long	time_ms;
+	long	max_ms;
 
-	while (x_ms > 500)
+	time_ms = get_time();
+	max_ms = properties->time_to_die - (time_ms - philo->last_eat);
+	if (sleep_ms < max_ms)
+		return (usleep(sleep_ms * 1000), 1);
+	else
 	{
-		check_death(properties, philo);
-		usleep(500);
-		x_ms -= 500;
+		usleep(max_ms * 1000);
+		// dprintf(2, "[%d] S'est fait rattraper par le temps et n'a d'autre choix que de mourir.\n", philo->nbr);
+		return (print_state(properties, philo, DIED));
 	}
-	check_death(properties, philo);
-	usleep(x_ms);
 }
 
 void	restitute_forks(t_properties *properties, t_philo *philo)
 {
-	if (!philo->fork_hodler)
-		return ;
-	philo->fork_hodler = 0;
-	if (philo->nbr % 2)
+	if (philo->nbr % 2 == 0)
 	{
-		pthread_mutex_unlock(&philo->next->fork);
-		pthread_mutex_unlock(&philo->fork);
+		if (philo->right_fork_hodler)
+			pthread_mutex_unlock(&philo->next->fork);
+		philo->right_fork_hodler = 0;
+		if (philo->left_fork_hodler)
+			pthread_mutex_unlock(&philo->fork);
+		philo->left_fork_hodler = 0;
 	}
 	else
 	{
-		pthread_mutex_unlock(&philo->next->fork);
-		pthread_mutex_unlock(&philo->fork);
+		if (philo->left_fork_hodler)
+			pthread_mutex_unlock(&philo->fork);
+		philo->left_fork_hodler = 0;
+		if (philo->right_fork_hodler)
+			pthread_mutex_unlock(&philo->next->fork);
+		philo->right_fork_hodler = 0;
 	}
 }
 
-void	take_forks(t_properties *properties, t_philo *philo)
+int	take_forks(t_properties *properties, t_philo *philo)
 {
-	if (philo->nbr % 2)
+	if (philo->nbr % 2 == 0)
 	{
+		dprintf(2, "[%d] veut prendre la fourchette %d\n", philo->nbr, philo->nbr);
 		pthread_mutex_lock(&philo->fork);
-		print_state(properties, philo, FORK);
+		philo->left_fork_hodler = 1;
+		if (!check_death(properties, philo) || !print_state(properties, philo, FORK))
+			return (0);
+		dprintf(2, "[%d] veut prendre la fourchette %d\n", philo->nbr, philo->next->nbr);
 		pthread_mutex_lock(&philo->next->fork);
-		print_state(properties, philo, FORK);
-		
+		philo->right_fork_hodler = 1;
+		if (!check_death(properties, philo) || !print_state(properties, philo, FORK))
+			return (0);
 	}
 	else
 	{
+		dprintf(2, "[%d] veut prendre la fourchette %d\n", philo->nbr, philo->next->nbr);
 		pthread_mutex_lock(&philo->next->fork);
-		print_state(properties, philo, FORK);
+		philo->right_fork_hodler = 1;
+		if (!check_death(properties, philo) || !print_state(properties, philo, FORK))
+			return (0);
+		dprintf(2, "[%d] veut prendre la fourchette %d\n", philo->nbr, philo->nbr);
 		pthread_mutex_lock(&philo->fork);
-		print_state(properties, philo, FORK);
+		philo->left_fork_hodler = 1;
+		if (!check_death(properties, philo) || !print_state(properties, philo, FORK))
+			return (0);
 	}
-	philo->fork_hodler = 1;
+	return (1);
 }
 
-void	just_eat(t_properties *properties, t_philo *philo)
+int	just_eat(t_properties *properties, t_philo *philo)
 {
-	check_death(properties, philo);
-	print_state(properties, philo, EATING);
-	sleep_ms(properties, philo, properties->time_to_eat);
-	check_death(properties, philo);
+	if (!print_state(properties, philo, EATING))
+		return (0);
 	philo->last_eat = get_time();
+	if (!sleep_ms(properties, philo, properties->time_to_eat))
+		return (0);
+	return (1);
+}
+
+int	night_time(t_properties *properties, t_philo *philo)
+{
+	if (!print_state(properties, philo, SLEEPING) \
+	|| !sleep_ms(properties, philo, properties->time_to_sleep))
+		return (0);
+	return (1);
+}
+
+int	reflexion_time(t_properties *properties, t_philo *philo)
+{
+	return (print_state(properties, philo, THINKING));
 }
 
 void	*routine(void *arg)
@@ -96,11 +130,19 @@ void	*routine(void *arg)
 
 	philo = arg;
 	properties = philo->properties;
+	while (!properties->start)
+		usleep(10);
 	while (1)
 	{
-		take_forks(properties, philo);
-		just_eat(properties, philo);
+		if (!take_forks(properties, philo))
+			return (NULL);
+		if (!just_eat(properties, philo))
+			return (NULL);
 		restitute_forks(properties, philo);
+		if (!night_time(properties, philo))
+			return (NULL);
+		if (!reflexion_time(properties, philo))
+			return (NULL);
 	}
 }
 
@@ -141,8 +183,8 @@ int	philo(int argc, char **argv)
 	if (!properties)
 		return (1);
 	philosopher = philos;
-	if (get_time() == -1)
-		return (free(properties), free_philos(philos), free(threads), 1);
+	// if (get_time() == -1)
+	// 	return (free(properties), free_philos(philos), free(threads), 1);
 	i = 0;
 	while (i < properties->number_of_philosophers)
 	{
@@ -150,6 +192,21 @@ int	philo(int argc, char **argv)
 		philosopher = philosopher->next;
 		i++;
 	}
+	get_time();
+	pthread_mutex_lock(&(properties->checkdeath_mutex));
+	properties->start = 1;
+	pthread_mutex_unlock(&(properties->checkdeath_mutex));
+	while (1)
+	{
+		if (get_time() - philosopher->last_eat > properties->time_to_die)
+			break ;
+		philosopher = philosopher->next;
+	}
+	print_state(properties, philosopher, DIED_EXTERN);
+	dprintf(2, "[%d] mutex from MAIN.\n", philosopher->nbr);
+	pthread_mutex_lock(&(properties->checkdeath_mutex));
+	properties->death = 1;
+	pthread_mutex_unlock(&(properties->checkdeath_mutex));
 	philosopher = philos;
 	i = 0;
 	while (i < properties->number_of_philosophers)
@@ -158,6 +215,7 @@ int	philo(int argc, char **argv)
 		i++;
 	}
 	pthread_mutex_destroy(&(properties->print_mutex));
+	pthread_mutex_destroy(&(properties->checkdeath_mutex)); // Penser a les destroy en cas de exit anticipe
 	return (free(properties), free_philos(philos), free(threads), 0);
 }
 

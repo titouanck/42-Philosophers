@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:54 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/29 18:47:14 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/30 19:21:27 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 typedef struct t_properties
 {
+	pthread_mutex_t	checkdeath_mutex;
 	pthread_mutex_t	print_mutex;
 	long			number_of_philosophers;
 	long			time_to_die;
@@ -30,6 +31,7 @@ typedef struct t_properties
 	long			time_to_sleep;
 	long			must_eat;
 	int				death;
+	int				start;
 }					t_properties;
 
 typedef struct s_philo
@@ -41,8 +43,14 @@ typedef struct s_philo
 	struct s_philo	*next;
 	struct s_philo	*prev;
 	t_properties	*properties;
-	int				fork_hodler;
+	int				left_fork_hodler;
+	int				right_fork_hodler;
 }					t_philo;
+
+/* Colors */
+
+# define RED "\033[31m"
+# define NC "\033[0m"
 
 /* Numbers attached to states */
 
@@ -51,6 +59,7 @@ typedef struct s_philo
 # define SLEEPING 3
 # define THINKING 4
 # define DIED 5
+# define DIED_EXTERN 6
 
 /* Error messages */
 
@@ -77,7 +86,7 @@ void			free_philos(t_philo *first);
 
 pthread_t		*thread_philos(int number_of_philosophers);
 
-void			check_death(t_properties *properties, t_philo *philo);
+int				check_death(t_properties *properties, t_philo *philo);
 
 void			restitute_forks(t_properties *properties, t_philo *philo);
 
