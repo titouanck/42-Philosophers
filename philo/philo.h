@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:54 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/30 19:21:27 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/31 01:43:17 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,18 @@ pthread_t		*thread_philos(int number_of_philosophers);
 int				check_death(t_properties *properties, t_philo *philo);
 
 void			restitute_forks(t_properties *properties, t_philo *philo);
+
+int				sleep_ms(t_properties *properties, t_philo *philo, long sleep_ms);
+
+void			restitute_forks(t_properties *properties, t_philo *philo);
+
+int				take_forks(t_properties *properties, t_philo *philo);
+
+int				just_eat(t_properties *properties, t_philo *philo);
+
+int				night_time(t_properties *properties, t_philo *philo);
+
+void			*routine(void *arg);
 
 /* Libft functions */
 
