@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:41 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/31 01:43:24 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/31 12:51:42 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,14 @@ int	philo(int argc, char **argv)
 		return (1);
 	philosopher = philos;
 	i = 0;
+	get_time();
 	while (i < properties->number_of_philosophers)
 	{
 		pthread_create(threads + i, NULL, routine, philosopher);
 		philosopher = philosopher->next;
 		i++;
 	}
-	get_time();
-	properties->start = 1;
+	// properties->start = 1;
 	philosopher = philos;
 	i = 0;
 	while (i < properties->number_of_philosophers)

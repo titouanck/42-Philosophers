@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 01:42:59 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/31 01:56:18 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:54:15 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	*routine(void *arg)
 
 	philo = arg;
 	properties = philo->properties;
-	while (!properties->start)
-		usleep(10);
+	// while (!properties->start)
+	// 	usleep(10);
 	if (philo->nbr % 2 == 0)
 		sleep_ms(properties, philo, properties->time_to_sleep);
 	while (1)
