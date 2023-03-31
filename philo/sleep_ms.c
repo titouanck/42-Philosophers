@@ -12,19 +12,21 @@
 
 #include "philo.h"
 
-int	sleep_ms(t_properties *properties, t_philo *philo, long sleep_ms)
+void	sleep_us(unsigned long sleep_us)
 {
-	long	time_ms;
-	long	max_ms;
+	long	wake_up_time_us;
 
-	time_ms = get_time();
-	max_ms = properties->time_to_die - (time_ms - philo->last_eat);
-	if (sleep_ms < max_ms)
-		return (usleep(sleep_ms * 1000), 1);
-	else
-	{
-		usleep(max_ms * 1000);
-		return (print_state(properties, philo, DIED));
-	}
+	wake_up_time_us = get_time_us() + sleep_us;
+	while (get_time_us() < wake_up_time_us)
+		usleep(500);
+}
+
+void	sleep_ms(unsigned long sleep_ms)
+{
+	long	wake_up_time_ms;
+
+	wake_up_time_ms = get_time_ms() + sleep_ms;
+	while (get_time_ms() < wake_up_time_ms)
+		usleep(500);
 }
 

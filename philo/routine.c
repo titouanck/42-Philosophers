@@ -16,13 +16,15 @@ void	*routine(void *arg)
 {
 	t_philo			*philo;
 	t_properties	*properties;
+	size_t			i;
 
 	philo = arg;
 	properties = philo->properties;
-	// while (!properties->start)
-	// 	usleep(10);
-	if (philo->nbr % 2 == 0)
-		sleep_ms(properties, philo, properties->time_to_sleep);
+	i = 0;
+	while (get_time_ms() < properties->start_ms)
+		usleep(philo->id);
+	if (philo->id % 2 == 0)
+		sleep_us(properties->time_to_eat * 750);
 	while (1)
 	{
 		if (!take_forks(properties, philo))
@@ -32,7 +34,8 @@ void	*routine(void *arg)
 		restitute_forks(properties, philo);
 		if (!night_time(properties, philo))
 			return (NULL);
-		if (!print_state(properties, philo, THINKING))
+		if (!deep_thought(properties, philo))
 			return (NULL);
+		i++;
 	}
 }

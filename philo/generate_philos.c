@@ -20,7 +20,6 @@ void	free_philos(t_philo *first)
 	philo = first;
 	while (philo)
 	{
-		pthread_mutex_destroy(&(philo->fork));
 		tmp = philo;
 		philo = philo->next;
 		free(tmp);
@@ -28,7 +27,7 @@ void	free_philos(t_philo *first)
 			break ;
 	}
 }
-
+// MALLOC PAS PROTEGE !
 void	philos_initialiation(t_properties *properties, t_philo *first)
 {
 	t_philo	*philo;
@@ -38,13 +37,23 @@ void	philos_initialiation(t_properties *properties, t_philo *first)
 	philo = first;
 	while (philo)
 	{
-		pthread_mutex_init(&(philo->fork), NULL);
-		philo->nbr = i;
+
 		philo->properties = properties;
+		philo->id = i;
 		philo->meals = 0;
-		philo->last_eat = 0;
-		philo->left_fork_hodler = 0;
-		philo->right_fork_hodler = 0;
+		philo->left_fork.holder = 0;
+		philo->right_fork.holder = 0;
+		philo->left_fork.mutex = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(philo->left_fork.mutex, NULL);
+		philo = philo->next;
+		if (philo == first)
+			break ;
+		i++;
+	}
+	while (philo)
+	{
+
+		philo->right_fork.mutex = philo->next->left_fork.mutex;
 		philo = philo->next;
 		if (philo == first)
 			break ;

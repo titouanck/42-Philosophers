@@ -23,28 +23,36 @@
 
 typedef struct t_properties
 {
-	pthread_mutex_t	checkdeath_mutex;
-	pthread_mutex_t	print_mutex;
-	long			number_of_philosophers;
+	int				number_of_philosophers;
 	long			time_to_die;
 	long			time_to_eat;
 	long			time_to_sleep;
-	long			must_eat;
-	int				death;
+	long			time_to_think;
+	int				must_eat;
 	int				start;
+	int				end;
+	long			start_ms;
+	int				hungry_philosophers;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	satiety_mutex;
 }					t_properties;
+
+typedef struct s_fork
+{
+	pthread_mutex_t	*mutex;
+	int				holder;
+}					t_fork;
 
 typedef struct s_philo
 {
-	int				nbr;
-	int				meals;
-	long			last_eat;
-	pthread_mutex_t	fork;
+	t_properties	*properties;
 	struct s_philo	*next;
 	struct s_philo	*prev;
-	t_properties	*properties;
-	int				left_fork_hodler;
-	int				right_fork_hodler;
+	int				id;
+	int				meals;
+	long			last_eat;
+	t_fork			left_fork;
+	t_fork			right_fork;
 }					t_philo;
 
 /* Colors */
@@ -60,18 +68,27 @@ typedef struct s_philo
 # define THINKING 4
 # define DIED 5
 # define DIED_EXTERN 6
+# define L_FORK 7
+# define R_FORK 8
 
 /* Error messages */
 
-# define ERRNBR	4815162342
+# define ERRNBR		4815162342
+
 # define ERRARGS	"usage: ./philo number_of_philosophers time_to_die " \
 					"time_to_eat time_to_sleep " \
 					"[number_of_times_each_philosopher_must_eat]\n"
-# define ERRALLOC "philo: could not allocate memory.\n"
+
+# define ERRALLOC	"philo: could not allocate memory.\n"
+
+/* Time functions */
+
+int				init_time(t_properties *properties);
+
+long			get_time_us(void);
+long			get_time_ms(void);
 
 /* Philosophers functions */
-
-long			get_time(void);
 
 int				print_state(t_properties *properties, t_philo *philo, \
 				int state);
@@ -86,11 +103,14 @@ void			free_philos(t_philo *first);
 
 pthread_t		*thread_philos(int number_of_philosophers);
 
-int				check_death(t_properties *properties, t_philo *philo);
-
 void			restitute_forks(t_properties *properties, t_philo *philo);
 
-int				sleep_ms(t_properties *properties, t_philo *philo, long sleep_ms);
+int				deep_thought(t_properties *properties, t_philo *philo);
+
+void			sleep_ms(unsigned long sleep_ms);
+void			sleep_us(unsigned long sleep_us);
+// void			sleep_ms(long sleep_ms);
+// int				sleep_ms(t_properties *properties, t_philo *philo, long sleep_ms);
 
 void			restitute_forks(t_properties *properties, t_philo *philo);
 

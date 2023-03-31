@@ -12,25 +12,31 @@
 
 #include "philo.h"
 
-long	get_time(void)
+int	init_time(t_properties *properties)
 {
-	static long		start_ms;
-	long			time_ms;
 	struct timeval	tv;
 
-	if (!start_ms)
-	{
-		if (gettimeofday(&tv, NULL) != 0)
-			return (-1);
-		start_ms = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	if (!properties || gettimeofday(&tv, NULL) != 0)
 		return (0);
-	}
-	else
-	{
-		if (gettimeofday(&tv, NULL) != 0)
-			return (-1);
-		time_ms = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-		time_ms -= start_ms;
-		return (time_ms);
-	}
+	properties->start_ms = ((tv.tv_sec * 1000) + (tv.tv_usec / 1000) \
+							+ 1 + properties->number_of_philosophers / 10);
+	return (1);
+}
+
+long	get_time_us(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL) != 0)
+		return (-1);
+	return ((tv.tv_sec * 1000000) + tv.tv_usec);
+}
+
+long	get_time_ms(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL) != 0)
+		return (-1);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }

@@ -36,19 +36,19 @@ t_properties	*define_properties(char **args, int size)
 	properties = malloc(sizeof(t_properties));
 	if (!properties)
 		return (ft_putstr_fd(ERRALLOC, 2), NULL);
-	properties->death = 0;
+	properties->end = 0;
 	properties->number_of_philosophers = atoi_spe(args[0]);
 	properties->time_to_die = atoi_spe(args[1]);
 	properties->time_to_eat = atoi_spe(args[2]);
 	properties->time_to_sleep = atoi_spe(args[3]);
+	properties->hungry_philosophers = properties->number_of_philosophers;
 	if (size == 5)
 		properties->must_eat = atoi_spe(args[4]);
 	else
 		properties->must_eat = -1;
 	if (!_check_properties(properties, size))
 		return (free(properties), ft_putstr_fd(ERRARGS, 2), NULL);
-	properties->start = 0;
 	pthread_mutex_init(&(properties->print_mutex), NULL);
-	pthread_mutex_init(&(properties->checkdeath_mutex), NULL);
+	pthread_mutex_init(&(properties->satiety_mutex), NULL);
 	return (properties);
 }
