@@ -50,5 +50,6 @@ t_properties	*define_properties(char **args, int size)
 		return (free(properties), ft_putstr_fd(ERRARGS, 2), NULL);
 	pthread_mutex_init(&(properties->print_mutex), NULL);
 	pthread_mutex_init(&(properties->satiety_mutex), NULL);
+	pthread_mutex_init(&(properties->end_mutex), NULL);
 	return (properties);
 }

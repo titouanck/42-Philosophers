@@ -33,6 +33,7 @@ typedef struct t_properties
 	int				end;
 	long			start_ms;
 	int				hungry_philosophers;
+	pthread_mutex_t	end_mutex;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	satiety_mutex;
 }					t_properties;
@@ -51,6 +52,7 @@ typedef struct s_philo
 	int				id;
 	int				meals;
 	long			last_eat;
+	pthread_mutex_t	last_eat_mutex;
 	t_fork			left_fork;
 	t_fork			right_fork;
 }					t_philo;
@@ -121,6 +123,8 @@ int				just_eat(t_properties *properties, t_philo *philo);
 int				night_time(t_properties *properties, t_philo *philo);
 
 void			*routine(void *arg);
+
+void			*lonely_routine(void *arg);
 
 /* Libft functions */
 

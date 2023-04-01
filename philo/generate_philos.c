@@ -45,6 +45,7 @@ void	philos_initialiation(t_properties *properties, t_philo *first)
 		philo->right_fork.holder = 0;
 		philo->left_fork.mutex = malloc(sizeof(pthread_mutex_t));
 		pthread_mutex_init(philo->left_fork.mutex, NULL);
+		pthread_mutex_init(&(philo->last_eat_mutex), NULL);
 		philo = philo->next;
 		if (philo == first)
 			break ;

@@ -65,13 +65,14 @@ int	just_eat(t_properties *properties, t_philo *philo)
 {
 	if (!print_state(properties, philo, EATING))
 		return (0);
+	pthread_mutex_lock(&(philo->last_eat_mutex));
 	philo->last_eat = get_time_ms();
+	pthread_mutex_unlock(&(philo->last_eat_mutex));
 	sleep_ms(properties->time_to_eat);
 	if (++philo->meals == properties->must_eat)
 	{
 		pthread_mutex_lock(&(properties->satiety_mutex));
 		properties->hungry_philosophers -= 1;
-		printf("%d\n", properties->hungry_philosophers);
 		pthread_mutex_unlock(&(properties->satiety_mutex));
 	}
 	return (1);

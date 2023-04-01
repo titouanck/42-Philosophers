@@ -12,15 +12,40 @@
 
 #include "philo.h"
 
+void	*lonely_routine(void *arg)
+{
+	t_philo			*philo;
+	t_properties	*properties;
+
+	philo = arg;
+	properties = philo->properties;
+	if (properties->number_of_philosophers == 1)
+	while (get_time_ms() < properties->start_ms)
+		usleep(philo->id);
+	pthread_mutex_lock(philo->left_fork.mutex);
+	philo->left_fork.holder = 1;
+	if (!print_state(properties, philo, FORK))
+		return (NULL);
+	while (1)
+	{
+		pthread_mutex_lock(&(properties->end_mutex));
+		if (properties->end)
+			break ;
+		pthread_mutex_unlock(&(properties->end_mutex));
+		usleep(250);
+	}
+	pthread_mutex_unlock(&(properties->end_mutex));
+	pthread_mutex_unlock(philo->left_fork.mutex);
+	return (NULL);
+}
+
 void	*routine(void *arg)
 {
 	t_philo			*philo;
 	t_properties	*properties;
-	size_t			i;
 
 	philo = arg;
 	properties = philo->properties;
-	i = 0;
 	while (get_time_ms() < properties->start_ms)
 		usleep(philo->id);
 	if (philo->id % 2 == 0)
@@ -36,6 +61,5 @@ void	*routine(void *arg)
 			return (NULL);
 		if (!deep_thought(properties, philo))
 			return (NULL);
-		i++;
 	}
 }
