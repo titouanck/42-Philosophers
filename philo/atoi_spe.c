@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:31:56 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 14:27:10 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:09:30 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ long long	atoi_spe(const char *str)
 {
 	long long		nbr;
 	long long		sign;
-	size_t		i;
+	size_t			i;
 
 	nbr = 0;
 	sign = 1;

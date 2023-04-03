@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:59:51 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 13:39:09 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:06:20 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@ void	_philos_init(t_properties *properties, t_philo *first)
 	t_philo	*philo;
 	size_t	i;
 
-	i = 1;
+	i = 0;
 	philo = first;
-	while (philo)
+	while (philo && ++i)
 	{
-
 		philo->properties = properties;
 		philo->id = i;
 		philo->meals = 0;
@@ -32,16 +31,13 @@ void	_philos_init(t_properties *properties, t_philo *first)
 		philo = philo->next;
 		if (philo == first)
 			break ;
-		i++;
 	}
 	while (philo)
 	{
-
 		philo->right_fork.mutex = philo->next->left_fork.mutex;
 		philo = philo->next;
 		if (philo == first)
 			break ;
-		i++;
 	}
 }
 

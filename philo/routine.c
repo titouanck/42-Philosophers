@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 01:42:59 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 13:43:18 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:09:08 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	*lonely_routine(void *arg)
 
 	philo = arg;
 	properties = philo->properties;
-	if (properties->number_of_philosophers == 1)
 	while (get_time_ms() < properties->start_ms)
 		usleep(philo->id);
 	pthread_mutex_lock(philo->left_fork.mutex);

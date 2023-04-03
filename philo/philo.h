@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:54 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 14:28:49 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:11:49 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,10 @@ typedef struct s_philo
 
 # define ERRNBR		4815162342
 
-# define ERRARGS	"usage: ./philo number_of_philosophers time_to_die " \
-					"time_to_eat time_to_sleep " \
-					"[number_of_times_each_philosopher_must_eat]\n"
+# define ERRARGS	"\
+usage: ./philo number_of_philosophers time_to_die \
+time_to_eat time_to_sleep \
+[number_of_times_each_philosopher_must_eat]\n"
 
 # define ERRALLOC	"philo: could not allocate memory.\n"
 
@@ -86,15 +87,15 @@ typedef struct s_philo
 
 int				init_time(t_properties *properties);
 
-long long			get_time_us(void);
-long long			get_time_ms(void);
+long long		get_time_us(void);
+long long		get_time_ms(void);
 
 /* Philosophers functions */
 
 int				print_state(t_properties *properties, t_philo *philo, \
 				int state);
 
-long long			atoi_spe(const char *str);
+long long		atoi_spe(const char *str);
 
 t_properties	*define_properties(char **args, int size);
 
@@ -110,8 +111,6 @@ int				deep_thought(t_properties *properties, t_philo *philo);
 
 void			sleep_ms(unsigned long long sleep_ms);
 void			sleep_us(unsigned long long sleep_us);
-// void			sleep_ms(long long sleep_ms);
-// int				sleep_ms(t_properties *properties, t_philo *philo, long long sleep_ms);
 
 int				take_forks(t_properties *properties, t_philo *philo);
 
@@ -129,11 +128,10 @@ void			check_death(t_properties *properties, t_philo *philo);
 
 /* Libft function */
 
-int	create_threads(t_properties *properties, t_philo *philo, \
-	pthread_t *threads);
+int				create_threads(t_properties *properties, t_philo *philo, \
+				pthread_t *threads);
 
-int	join_threads(t_properties *properties, pthread_t *threads);
-
+int				join_threads(t_properties *properties, pthread_t *threads);
 
 size_t			ft_putstr_fd(const char *str, int fd);
 

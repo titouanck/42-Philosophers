@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:12:53 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 13:28:04 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:14:26 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,26 @@ static int	_check_properties(t_properties *properties, int size)
 static int	_check_mutexes(t_properties *properties)
 {
 	if (pthread_mutex_init(&(properties->print_mutex), NULL) != 0)
-		return (ft_putstr_fd(ERRALLOC, 2), \
-		free(properties), \
-		0);
+	{
+		ft_putstr_fd(ERRALLOC, 2);
+		free(properties);
+		return (0);
+	}
 	else if (pthread_mutex_init(&(properties->satiety_mutex), NULL) != 0)
-		return (ft_putstr_fd(ERRALLOC, 2), \
-		pthread_mutex_destroy(&(properties->print_mutex)),
-		free(properties), \
-		0);
+	{
+		ft_putstr_fd(ERRALLOC, 2);
+		pthread_mutex_destroy(&(properties->print_mutex));
+		free(properties);
+		return (0);
+	}
 	else if (pthread_mutex_init(&(properties->end_mutex), NULL) != 0)
-		return (ft_putstr_fd(ERRALLOC, 2), \
-		pthread_mutex_destroy(&(properties->print_mutex)), \
-		pthread_mutex_destroy(&(properties->satiety_mutex)),
-		free(properties), \
-		0);
+	{
+		ft_putstr_fd(ERRALLOC, 2);
+		pthread_mutex_destroy(&(properties->print_mutex));
+		pthread_mutex_destroy(&(properties->satiety_mutex));
+		free(properties);
+		return (0);
+	}
 	else
 		return (1);
 }

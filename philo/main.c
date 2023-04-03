@@ -6,11 +6,24 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:41 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 13:38:39 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:08:19 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static void	_set_time_to_think(t_properties *properties)
+{
+	properties->time_to_think = 0;
+	if (properties->time_to_eat == 0 && properties->time_to_sleep == 0)
+		properties->time_to_think = 100;
+	else if (properties->number_of_philosophers % 2 != 0)
+		properties->time_to_think = ((properties->time_to_eat * 2) \
+									- properties->time_to_sleep) \
+									* 1000;
+	if (properties->time_to_think < 0)
+		properties->time_to_think = 0;
+}
 
 static t_properties	*_init(int argc, char **argv, t_philo **philos_ptr, \
 	pthread_t **threads_ptr)
@@ -32,13 +45,7 @@ static t_properties	*_init(int argc, char **argv, t_philo **philos_ptr, \
 		return (free_properties(properties), free_philos(philos), NULL);
 	*philos_ptr = philos;
 	*threads_ptr = threads;
-	properties->time_to_think = 0;
-	if (properties->time_to_eat == 0 && properties->time_to_sleep == 0)
-		properties->time_to_think = 100;
-	else if (properties->number_of_philosophers % 2 != 0)
-		properties->time_to_think = ((properties->time_to_eat * 2) - properties->time_to_sleep) * 1000;
-	if (properties->time_to_think < 0)
-		properties->time_to_think = 0;
+	_set_time_to_think(properties);
 	return (properties);
 }
 
