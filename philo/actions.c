@@ -6,13 +6,13 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 01:41:40 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/31 01:42:00 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 13:36:48 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	restitute_forks(t_properties *properties, t_philo *philo)
+void	restitute_forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{
@@ -91,6 +91,6 @@ int	deep_thought(t_properties *properties, t_philo *philo)
 	if (!print_state(properties, philo, THINKING))
 		return (0);
 	if (properties->time_to_think)
-		sleep_ms(properties->time_to_think);
+		sleep_us(properties->time_to_think);
 	return (1);
 }

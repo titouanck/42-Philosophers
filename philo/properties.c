@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   define_properties.c                                :+:      :+:    :+:   */
+/*   properties.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:12:53 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/30 18:53:01 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 13:28:04 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,27 @@ static int	_check_properties(t_properties *properties, int size)
 	return (1);
 }
 
+static int	_check_mutexes(t_properties *properties)
+{
+	if (pthread_mutex_init(&(properties->print_mutex), NULL) != 0)
+		return (ft_putstr_fd(ERRALLOC, 2), \
+		free(properties), \
+		0);
+	else if (pthread_mutex_init(&(properties->satiety_mutex), NULL) != 0)
+		return (ft_putstr_fd(ERRALLOC, 2), \
+		pthread_mutex_destroy(&(properties->print_mutex)),
+		free(properties), \
+		0);
+	else if (pthread_mutex_init(&(properties->end_mutex), NULL) != 0)
+		return (ft_putstr_fd(ERRALLOC, 2), \
+		pthread_mutex_destroy(&(properties->print_mutex)), \
+		pthread_mutex_destroy(&(properties->satiety_mutex)),
+		free(properties), \
+		0);
+	else
+		return (1);
+}
+
 t_properties	*define_properties(char **args, int size)
 {
 	t_properties	*properties;
@@ -48,8 +69,15 @@ t_properties	*define_properties(char **args, int size)
 		properties->must_eat = -1;
 	if (!_check_properties(properties, size))
 		return (free(properties), ft_putstr_fd(ERRARGS, 2), NULL);
-	pthread_mutex_init(&(properties->print_mutex), NULL);
-	pthread_mutex_init(&(properties->satiety_mutex), NULL);
-	pthread_mutex_init(&(properties->end_mutex), NULL);
+	if (!_check_mutexes(properties))
+		return (NULL);
 	return (properties);
+}
+
+void	free_properties(t_properties *properties)
+{
+	pthread_mutex_destroy(&(properties->print_mutex));
+	pthread_mutex_destroy(&(properties->satiety_mutex));
+	pthread_mutex_destroy(&(properties->end_mutex));
+	free(properties);
 }

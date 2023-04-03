@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:54 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/03/31 01:43:17 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 14:28:49 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@
 
 typedef struct t_properties
 {
-	int				number_of_philosophers;
-	long			time_to_die;
-	long			time_to_eat;
-	long			time_to_sleep;
-	long			time_to_think;
-	int				must_eat;
+	long long		number_of_philosophers;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
+	long long		time_to_think;
+	long long		must_eat;
 	int				start;
 	int				end;
-	long			start_ms;
+	long long		start_ms;
 	int				hungry_philosophers;
 	pthread_mutex_t	end_mutex;
 	pthread_mutex_t	print_mutex;
@@ -51,7 +51,7 @@ typedef struct s_philo
 	struct s_philo	*prev;
 	int				id;
 	int				meals;
-	long			last_eat;
+	long long		last_eat;
 	pthread_mutex_t	last_eat_mutex;
 	t_fork			left_fork;
 	t_fork			right_fork;
@@ -64,14 +64,13 @@ typedef struct s_philo
 
 /* Numbers attached to states */
 
-# define FORK 1
+# define L_FORK 0
+# define R_FORK 1
 # define EATING 2
 # define SLEEPING 3
 # define THINKING 4
 # define DIED 5
 # define DIED_EXTERN 6
-# define L_FORK 7
-# define R_FORK 8
 
 /* Error messages */
 
@@ -87,15 +86,15 @@ typedef struct s_philo
 
 int				init_time(t_properties *properties);
 
-long			get_time_us(void);
-long			get_time_ms(void);
+long long			get_time_us(void);
+long long			get_time_ms(void);
 
 /* Philosophers functions */
 
 int				print_state(t_properties *properties, t_philo *philo, \
 				int state);
 
-long			atoi_spe(const char *str);
+long long			atoi_spe(const char *str);
 
 t_properties	*define_properties(char **args, int size);
 
@@ -103,18 +102,16 @@ t_philo			*generate_philos(t_properties *properties, int nb);
 
 void			free_philos(t_philo *first);
 
-pthread_t		*thread_philos(int number_of_philosophers);
+pthread_t		*allocate_threads(int number_of_philosophers);
 
-void			restitute_forks(t_properties *properties, t_philo *philo);
+void			restitute_forks(t_philo *philo);
 
 int				deep_thought(t_properties *properties, t_philo *philo);
 
-void			sleep_ms(unsigned long sleep_ms);
-void			sleep_us(unsigned long sleep_us);
-// void			sleep_ms(long sleep_ms);
-// int				sleep_ms(t_properties *properties, t_philo *philo, long sleep_ms);
-
-void			restitute_forks(t_properties *properties, t_philo *philo);
+void			sleep_ms(unsigned long long sleep_ms);
+void			sleep_us(unsigned long long sleep_us);
+// void			sleep_ms(long long sleep_ms);
+// int				sleep_ms(t_properties *properties, t_philo *philo, long long sleep_ms);
 
 int				take_forks(t_properties *properties, t_philo *philo);
 
@@ -126,9 +123,17 @@ void			*routine(void *arg);
 
 void			*lonely_routine(void *arg);
 
-/* Libft functions */
+void			free_properties(t_properties *properties);
 
-size_t			ft_strlen(const char *s);
+void			check_death(t_properties *properties, t_philo *philo);
+
+/* Libft function */
+
+int	create_threads(t_properties *properties, t_philo *philo, \
+	pthread_t *threads);
+
+int	join_threads(t_properties *properties, pthread_t *threads);
+
 
 size_t			ft_putstr_fd(const char *str, int fd);
 
