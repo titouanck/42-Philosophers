@@ -6,26 +6,11 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:45:50 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 13:38:18 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/04 11:42:03 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	_check_satiety(t_properties *properties)
-{
-	pthread_mutex_lock(&(properties->satiety_mutex));
-	if (!properties->hungry_philosophers)
-	{
-		pthread_mutex_unlock(&(properties->satiety_mutex));
-		pthread_mutex_lock(&(properties->end_mutex));
-		properties->end = 1;
-		pthread_mutex_unlock(&(properties->end_mutex));
-		return (0);
-	}
-	pthread_mutex_unlock(&(properties->satiety_mutex));
-	return (1);
-}
 
 int	_check_last_eat(t_properties *properties, t_philo *philo)
 {
@@ -55,9 +40,8 @@ void	check_death(t_properties *properties, t_philo *philo)
 				pthread_mutex_unlock(&(properties->end_mutex));
 				return ;
 			}
-			pthread_mutex_unlock(&(properties->end_mutex));
-			if (!_check_satiety(properties))
-				return ;
+			else
+				pthread_mutex_unlock(&(properties->end_mutex));
 			if (!_check_last_eat(properties, philo))
 				return ;
 			i++;

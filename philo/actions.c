@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 01:41:40 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 13:36:48 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/03 17:14:48 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,18 @@ int	take_forks(t_properties *properties, t_philo *philo)
 
 int	just_eat(t_properties *properties, t_philo *philo)
 {
-	if (!print_state(properties, philo, EATING))
-		return (0);
-	pthread_mutex_lock(&(philo->last_eat_mutex));
-	philo->last_eat = get_time_ms();
-	pthread_mutex_unlock(&(philo->last_eat_mutex));
-	sleep_ms(properties->time_to_eat);
 	if (++philo->meals == properties->must_eat)
 	{
 		pthread_mutex_lock(&(properties->satiety_mutex));
 		properties->hungry_philosophers -= 1;
 		pthread_mutex_unlock(&(properties->satiety_mutex));
 	}
+	if (!print_state(properties, philo, EATING))
+		return (0);
+	pthread_mutex_lock(&(philo->last_eat_mutex));
+	philo->last_eat = get_time_ms();
+	pthread_mutex_unlock(&(philo->last_eat_mutex));
+	sleep_ms(properties->time_to_eat);
 	return (1);
 }
 

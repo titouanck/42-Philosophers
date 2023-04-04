@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:58:26 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 15:00:24 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/04 11:35:26 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,19 @@ static int	_check_end(t_properties *properties, t_philo *philo, int state)
 		pthread_mutex_unlock(&(properties->end_mutex));
 		if (state != DIED)
 			restitute_forks(philo);
-		pthread_mutex_unlock(&(properties->print_mutex));
-		return (0);
+		return (pthread_mutex_unlock(&(properties->print_mutex)), 0);
 	}
 	pthread_mutex_unlock(&(properties->end_mutex));
+	pthread_mutex_lock(&(properties->satiety_mutex));
+	if (!properties->hungry_philosophers && state != EATING)
+	{
+		pthread_mutex_unlock(&(properties->satiety_mutex));
+		pthread_mutex_lock(&(properties->end_mutex));
+		properties->end = 1;
+		pthread_mutex_unlock(&(properties->end_mutex));
+		return (pthread_mutex_unlock(&(properties->print_mutex)), 0);
+	}
+	pthread_mutex_unlock(&(properties->satiety_mutex));
 	return (1);
 }
 
