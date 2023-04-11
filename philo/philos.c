@@ -6,13 +6,13 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:59:51 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 15:06:20 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/11 14:04:37 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	_philos_init(t_properties *properties, t_philo *first)
+static void	_philos_init(t_properties *properties, t_philo *first)
 {
 	t_philo	*philo;
 	size_t	i;
@@ -41,6 +41,12 @@ void	_philos_init(t_properties *properties, t_philo *first)
 	}
 }
 
+static void	_make_ends_meet(t_philo *philo, t_philo *first)
+{
+	philo->next = first;
+	first->prev = philo;
+}
+
 t_philo	*generate_philos(t_properties *properties, int nb)
 {
 	t_philo	*philo;
@@ -54,23 +60,23 @@ t_philo	*generate_philos(t_properties *properties, int nb)
 	i = 0;
 	while (1)
 	{
+		philo->next = NULL;
 		philo->left_fork.mutex = malloc(sizeof(pthread_mutex_t));
 		if (!(philo->left_fork.mutex))
-			return (free_philos(first), ft_putstr_fd(ERRALLOC, 2), NULL);
+			return (free_philos(first, 0), ft_putstr_fd(ERRALLOC, 2), NULL);
 		if (++i >= nb)
 			break ;
 		philo->next = malloc(sizeof(t_philo));
 		if (!(philo->next))
-			return (free_philos(first), ft_putstr_fd(ERRALLOC, 2), NULL);
+			return (free_philos(first, 0), ft_putstr_fd(ERRALLOC, 2), NULL);
 		philo->next->prev = philo;
 		philo = philo->next;
 	}
-	philo->next = first;
-	first->prev = philo;
+	_make_ends_meet(philo, first);
 	return (_philos_init(properties, first), first);
 }
 
-void	free_philos(t_philo *first)
+void	free_philos(t_philo *first, int initialized)
 {
 	t_philo	*philo;
 	t_philo	*tmp;
@@ -78,9 +84,14 @@ void	free_philos(t_philo *first)
 	philo = first;
 	while (philo)
 	{
-		pthread_mutex_destroy(&(philo->last_eat_mutex));
-		pthread_mutex_destroy(philo->left_fork.mutex);
-		free(philo->left_fork.mutex);
+		if (initialized)
+			pthread_mutex_destroy(&(philo->last_eat_mutex));
+		if (philo->left_fork.mutex)
+		{
+			if (initialized)
+				pthread_mutex_destroy(philo->left_fork.mutex);
+			free(philo->left_fork.mutex);
+		}
 		tmp = philo;
 		philo = philo->next;
 		free(tmp);

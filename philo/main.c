@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:41 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 15:08:19 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/11 12:35:37 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static t_properties	*_init(int argc, char **argv, t_philo **philos_ptr, \
 		return (free_properties(properties), NULL);
 	threads = allocate_threads(properties->number_of_philosophers);
 	if (!threads)
-		return (free_properties(properties), free_philos(philos), NULL);
+		return (free_properties(properties), free_philos(philos, 1), NULL);
 	*philos_ptr = philos;
 	*threads_ptr = threads;
 	_set_time_to_think(properties);
@@ -69,7 +69,7 @@ int	philo(int argc, char **argv)
 	}
 	join_threads(properties, threads);
 	free_properties(properties);
-	free_philos(philos);
+	free_philos(philos, 1);
 	free(threads);
 	return (0);
 }

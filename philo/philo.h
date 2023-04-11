@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:54 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 15:11:49 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/11 12:35:21 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_properties	*define_properties(char **args, int size);
 
 t_philo			*generate_philos(t_properties *properties, int nb);
 
-void			free_philos(t_philo *first);
+void			free_philos(t_philo *first, int initialized);
 
 pthread_t		*allocate_threads(int number_of_philosophers);
 
