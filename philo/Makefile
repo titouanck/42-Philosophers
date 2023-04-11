@@ -31,8 +31,6 @@ SRCS += time.c
 TERM_WIDTH := $(shell tput cols)
 SHELL = /bin/bash
 
-FT_PRINTF_PATH = 42-ft_printf
-
 vpath %.c ${SRCS_PATH}
 
 INC = -I ./
@@ -41,7 +39,7 @@ OBJS = ${patsubst %.c, ${OBJS_PATH}/%.o, ${SRCS}}
 OBJS_PATH = ./objs/
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -lpthread
+CFLAGS = -Wall -Wextra -Werror 
 NAME = philo
 
 all: ${NAME}
@@ -52,7 +50,7 @@ ${OBJS}: ${OBJS_PATH}/%.o: %.c Makefile
 	@	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
 ${NAME}:  ${OBJS}
-	@	${CC} ${CFLAGS} -o ${NAME} ${OBJS} ${LIBS} ${INC}	
+	@	${CC} -lpthread ${CFLAGS} -o ${NAME} ${OBJS} ${LIBS} ${INC}	
 	@	echo -ne "\r\033[2K" $(LIGHTGREEN) "→ $(NAME) OK!\n"$(NC)
 
 clean:	
@@ -71,23 +69,23 @@ ifndef COLORCOMPIL
 ifeq ($(shell test $(TERM_WIDTH) -gt 69; echo $$?), 0)
 COLORCOMPIL = \
 	if [ "$(shell test $P -lt 33; echo $$?)" = "0" ]; then \
-    	echo -ne "\r\033[2K" $(LIGHTRED) "[$(P)%] "$(DARKGRAY) "Compiling MiniShell" $(WHITE) "$<"; \
+    	echo -ne "\r\033[2K" $(LIGHTRED) "[$(P)%] "$(DARKGRAY) "Compiling ${NAME}" $(WHITE) "$<"; \
 	else \
 		if [ "$(shell test $P -lt 66; echo $$?)" = "0" ]; then \
-    		echo -ne "\r\033[2K" $(YELLOW) "[$(P)%]" $(DARKGRAY) "Compiling MiniShell" $(WHITE) "$<"; \
+    		echo -ne "\r\033[2K" $(YELLOW) "[$(P)%]" $(DARKGRAY) "Compiling ${NAME}" $(WHITE) "$<"; \
 		else \
-       		echo -ne "\r\033[2K" $(LIGHTGREEN) "[$(P)%]" $(DARKGRAY) "Compiling MiniShell" $(WHITE) "$<"; \
+       		echo -ne "\r\033[2K" $(LIGHTGREEN) "[$(P)%]" $(DARKGRAY) "Compiling ${NAME}" $(WHITE) "$<"; \
 		fi \
 	fi
 else
 COLORCOMPIL = \
 	if [ "$(shell test $P -lt 33; echo $$?)" = "0" ]; then \
-    	echo -ne "\r\033[2K" $(LIGHTRED) "[$(P)%] "$(DARKGRAY) "Compiling MiniShell"; \
+    	echo -ne "\r\033[2K" $(LIGHTRED) "[$(P)%] "$(DARKGRAY) "Compiling ${NAME}"; \
 	else \
 		if [ "$(shell test $P -lt 66; echo $$?)" = "0" ]; then \
-    		echo -ne "\r\033[2K" $(YELLOW) "[$(P)%]" $(DARKGRAY) "Compiling MiniShell"; \
+    		echo -ne "\r\033[2K" $(YELLOW) "[$(P)%]" $(DARKGRAY) "Compiling ${NAME}"; \
 		else \
-       		echo -ne "\r\033[2K" $(LIGHTGREEN) "[$(P)%]" $(DARKGRAY) "Compiling MiniShell"; \
+       		echo -ne "\r\033[2K" $(LIGHTGREEN) "[$(P)%]" $(DARKGRAY) "Compiling ${NAME}"; \
 		fi \
 	fi
 endif
