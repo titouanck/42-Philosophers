@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 01:41:40 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 17:14:48 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/25 13:11:19 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	just_eat(t_properties *properties, t_philo *philo)
 	pthread_mutex_lock(&(philo->last_eat_mutex));
 	philo->last_eat = get_time_ms();
 	pthread_mutex_unlock(&(philo->last_eat_mutex));
-	sleep_ms(properties->time_to_eat);
+	sleep_ms(properties->time_to_eat, properties);
 	return (1);
 }
 
@@ -82,7 +82,7 @@ int	night_time(t_properties *properties, t_philo *philo)
 {
 	if (!print_state(properties, philo, SLEEPING))
 		return (0);
-	sleep_ms(properties->time_to_sleep);
+	sleep_ms(properties->time_to_sleep, properties);
 	return (1);
 }
 
@@ -91,6 +91,6 @@ int	deep_thought(t_properties *properties, t_philo *philo)
 	if (!print_state(properties, philo, THINKING))
 		return (0);
 	if (properties->time_to_think)
-		sleep_us(properties->time_to_think);
+		sleep_us(properties->time_to_think, properties);
 	return (1);
 }

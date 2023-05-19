@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 01:42:59 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/03 15:09:08 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/25 13:11:37 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	*routine(void *arg)
 	while (get_time_ms() < properties->start_ms)
 		usleep(philo->id);
 	if (philo->id % 2 == 0)
-		sleep_us(properties->time_to_eat * 750);
+		sleep_us(properties->time_to_eat * 750, properties);
 	while (1)
 	{
 		if (!take_forks(properties, philo))

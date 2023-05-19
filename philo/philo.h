@@ -6,7 +6,7 @@
 /*   By: tchevrie <tchevrie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 15:17:54 by tchevrie          #+#    #+#             */
-/*   Updated: 2023/04/11 14:16:52 by tchevrie         ###   ########.fr       */
+/*   Updated: 2023/04/25 13:10:26 by tchevrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,9 @@ long long		get_time_us(void);
 
 long long		get_time_ms(void);
 
-void			sleep_ms(unsigned long long sleep_ms);
+void			sleep_ms(unsigned long long sleep_us, t_properties *properties);
 
-void			sleep_us(unsigned long long sleep_us);
+void			sleep_us(unsigned long long sleep_us, t_properties *properties);
 
 /* Philosophers functions */
 
